@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>ATS Ownership Check</title>
+</head>
+<body>
+  <h1>Check if you own ATS</h1>
+  <input type="text" id="steamid" placeholder="Enter your SteamID64">
+  <button onclick="checkATS()">Check</button>
+  <p id="result"></p>
+
+  <script>
+    async function checkATS() {
+      const steamid = document.getElementById("steamid").value;
+      const res = await fetch(`https://YOUR-VERCEL-PROJECT.vercel.app/api/checkATS?steamid=${steamid}`);
+      const data = await res.json();
+
+      document.getElementById("result").textContent = data.ownsATS
+        ? "✅ You own ATS! Here’s the link: [link to assets]"
+        : "❌ You don't own ATS.";
+    }
+  </script>
+</body>
+</html>
