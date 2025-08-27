@@ -13,7 +13,7 @@
   <script>
     async function checkATS() {
       const steamid = document.getElementById("steamid").value;
-      const res = await fetch(`https://YOUR-VERCEL-PROJECT.vercel.app/api/checkATS?steamid=${steamid}`);
+      const res = await fetch(`https://usa-snowy.vercel.app/api/checkATS?steamid=${steamid}`);
       const data = await res.json();
 
       document.getElementById("result").textContent = data.ownsATS
