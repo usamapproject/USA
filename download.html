@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Download & ATS Check - USA Map</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: #141a2f;
+      --text: #e6e8ee;
+      --muted: #9aa3b2;
+      --accent: #4f8cff;
+      --accent-strong: #3b74e0;
+      --danger: #ff4d6d;
+      --success: #30d158;
+      --shadow: 0 20px 40px rgba(0,0,0,0.35);
+      --stroke: rgba(255,255,255,0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 20% 0%, #0f1630 0%, var(--bg) 60%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      position: sticky; top: 0; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 24px;
+      background: linear-gradient(180deg, rgba(20,26,47,0.85), rgba(20,26,47,0.55));
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--stroke);
+    }
+    .brand { font-weight: 800; letter-spacing: 0.3px; }
+    nav { display: flex; gap: 12px; }
+    nav a { color: var(--text); text-decoration: none; opacity: 0.9; padding:8px 10px; border-radius:8px; }
+    nav a:hover { color: var(--accent); background: rgba(79,140,255,0.08); }
+    .card { width: 100%; max-width: 800px; background: linear-gradient(180deg, rgba(23,30,55,0.9) 0%, rgba(20,26,47,0.95) 100%); border:1px solid var(--stroke); border-radius:18px; padding:28px; margin: 24px auto; box-shadow: var(--shadow); position:relative; }
+    .card::before { content:''; position:absolute; inset:0; border-radius:18px; padding:1px; background: linear-gradient(180deg, rgba(79,140,255,0.3), rgba(79,140,255,0)); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude; pointer-events:none; }
+    h1 { margin: 0 0 8px 0; font-size: 28px; }
+    p.sub { margin: 0 0 16px 0; color: var(--muted); }
+    .row { display: flex; gap: 12px; align-items: center; }
+    input[type="text"] {
+      flex: 1; background: #0f152a; color: var(--text);
+      border: 1px solid rgba(255,255,255,0.08); border-radius: 10px;
+      padding: 12px 14px; outline: none; font-size: 14px;
+    }
+    input[type="text"]:focus { border-color: rgba(79,140,255,0.8); box-shadow: 0 0 0 4px rgba(79,140,255,0.15); }
+    .btn { display:inline-flex; align-items:center; gap:8px; }
+    button { background: var(--accent); color: white; border: 0; border-radius: 10px; padding: 12px 16px; font-weight: 600; font-size: 14px; cursor: pointer; transition: background .15s ease, transform .04s ease; }
+    button:hover { background: var(--accent-strong); }
+    button:active { transform: translateY(1px); }
+    .muted { color: var(--muted); }
+    .result { border-top: 1px dashed rgba(255,255,255,0.08); margin-top: 18px; padding-top: 18px; min-height: 24px; font-size:15px; }
+    .tag { display: inline-flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 999px; font-weight: 600; }
+    .tag.success { background: rgba(48,209,88,0.12); color: var(--success); }
+    .tag.error { background: rgba(255,77,109,0.12); color: var(--danger); }
+    .downloads { display: grid; gap: 12px; margin-top: 16px; grid-template-columns: 1fr; }
+    @media (min-width: 700px) { .downloads { grid-template-columns: 1fr 1fr; } }
+    .dl { display: flex; align-items: center; justify-content: space-between; gap:12px; background: linear-gradient(180deg, #0f152a 0%, #0d1326 100%); border:1px solid var(--stroke); border-radius: 12px; padding: 14px 16px; }
+    .dl-title { font-weight: 600; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">USA Map</div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="download.html">Download</a>
+    </nav>
+  </header>
+
+  <div class="card">
+    <h1>Download</h1>
+    <p class="sub">This project targets <b>ETS2</b>, but uses assets from <b>ATS</b>. Please verify that you own American Truck Simulator to unlock downloads.</p>
+
+    <div class="row">
+      <input type="text" id="steamid" placeholder="xxxxxxxxxxxxxxxxx" inputmode="numeric" autocomplete="off">
+      <button id="checkBtn" onclick="checkATS()">Verify ATS ownership</button>
+    </div>
+
+    <div id="hint" class="muted" style="margin-top:8px;font-size:12px;">
+      Not sure of your SteamID64? Use <a href="https://steamid.io/lookup" target="_blank" rel="noreferrer noopener">steamid.io</a>.
+    </div>
+
+    <div id="result" class="result"></div>
+
+    <div id="downloads" class="downloads" style="display:none;">
+      <div class="dl"><span class="dl-title">USA Map Assets (v1.0) part 1</span><a class="btn" href="#" download><button>Download</button></a></div>
+      <div class="dl"><span class="dl-title">USA Map Assets (v1.0) part 2</span><a class="btn" href="#" download><button>Download</button></a></div>
+      <div class="dl"><span class="dl-title">USA Map Assets (v1.0) part 3</span><a class="btn" href="#" download><button>Download</button></a></div>
+      <div class="dl"><span class="dl-title">USA Map Assets (v1.0) part 4</span><a class="btn" href="#" download><button>Download</button></a></div>
+      <div class="dl"><span class="dl-title">USA Map Assets (v1.0) part 5</span><a class="btn" href="#" download><button>Download</button></a></div>
+      <div class="dl"><span class="dl-title">USA Map Assets (v1.0) part 6</span><a class="btn" href="#" download><button>Download</button></a></div>
+      <div class="dl"><span class="dl-title">USA Map Assets (v1.0) part 7</span><a class="btn" href="#" download><button>Download</button></a></div>
+      <div class="dl"><span class="dl-title">USA Map Assets (v1.0) part 8</span><a class="btn" href="#" download><button>Download</button></a></div>
+      <div class="dl"><span class="dl-title">USA Map Assets (v1.0) part 9</span><a class="btn" href="#" download><button>Download</button></a></div>
+      <div class="dl"><span class="dl-title">USA Map Assets (v1.0) part 10</span><a class="btn" href="#" download><button>Download</button></a></div>
+      <div class="dl"><span class="dl-title">USA Map Assets (v1.0) part 11</span><a class="btn" href="#" download><button>Download</button></a></div>
+      <div class="dl"><span class="dl-title">USA Map Assets (v1.0) part 12</span><a class="btn" href="#" download><button>Download</button></a></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h1>Requirements & Instructions</h1>
+    <div style="display:grid; gap:16px;">
+      <div style="background:#0f152a;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px;">
+        <div style="font-weight:700;margin-bottom:6px;">Requirements</div>
+        <ul style="margin:0;padding-left:18px;line-height:1.9;">
+          <li>Steam version of American Truck Simulator</li>
+          <li>Enough free disk space for all downloaded archives</li>
+          <li>Stable internet connection</li>
+        </ul>
+      </div>
+      <div style="background:#0f152a;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px;">
+        <div style="font-weight:700;margin-bottom:6px;">Install steps</div>
+        <ol style="margin:0;padding-left:18px;line-height:1.9;">
+          <li>Verify ATS ownership above and download all parts.</li>
+          <li>Extract archives in order into your ETS2 mods folder.</li>
+          <li>Enable the USA Map mod in ETS2 and restart.</li>
+        </ol>
+      </div>
+      <div style="background:#0f152a;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px;">
+        <div style="font-weight:700;margin-bottom:6px;">Troubleshooting</div>
+        <ul style="margin:0;padding-left:18px;line-height:1.9;">
+          <li>Ownership failed? Double-check your 17‑digit SteamID64.</li>
+          <li>Downloads missing? Refresh after a minute and retry the check.</li>
+          <li>Game issues? Remove other conflicting mods and try again.</li>
+        </ul>
+      </div>
+      <div style="background:#0f152a;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px;">
+        <div style="font-weight:700;margin-bottom:6px;">Support</div>
+        <p class="muted" style="margin:0;">For help, contact the team on our community channels. Please share your game version, a list of active mods, and screenshots of errors.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const endpoint = 'https://usa-snowy.vercel.app/api/checkATS';
+
+    function setLoading(isLoading) {
+      const btn = document.getElementById('checkBtn');
+      btn.disabled = isLoading;
+      btn.textContent = isLoading ? 'Checking…' : 'Check ownership';
+    }
+
+    function renderMessage(html) {
+      document.getElementById('result').innerHTML = html;
+    }
+
+    function validateSteamId(steamid) {
+      return /^\d{17}$/.test(steamid);
+    }
+
+    async function checkATS() {
+      const input = document.getElementById('steamid');
+      const steamid = input.value.trim();
+      renderMessage('');
+      document.getElementById('downloads').style.display = 'none';
+
+      if (!validateSteamId(steamid)) {
+        renderMessage('<span class="tag error">⚠️ Invalid SteamID64. It must have 17 digits.</span>');
+        input.focus();
+        return;
+      }
+
+      setLoading(true);
+      renderMessage('<span class="muted">Checking ownership…</span>');
+
+      try {
+        const res = await fetch(`${endpoint}?steamid=${steamid}`, { method: 'GET' });
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data?.error || 'Request failed');
+        }
+
+        if (data.ownsATS) {
+          renderMessage('<span class="tag success">✅ You own ATS. Downloads unlocked below.</span>');
+          document.getElementById('downloads').style.display = 'grid';
+        } else {
+          renderMessage('<span class="tag error">❌ You do not own ATS. Downloads are locked.</span>');
+        }
+      } catch (err) {
+        renderMessage(`<span class="tag error">❌ Error: ${err.message || 'Unexpected error'}</span>`);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    document.getElementById('steamid').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') { checkATS(); }
+    });
+  </script>
+</body>
+</html>
+
+

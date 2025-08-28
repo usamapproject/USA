@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ATS Ownership Check</title>
+  <title>USA Map Project</title>
   <style>
     :root {
       --bg: #0b1020;
@@ -15,6 +15,8 @@
       --danger: #ff4d6d;
       --success: #30d158;
       --shadow: 0 20px 40px rgba(0,0,0,0.35);
+      --glass: rgba(255,255,255,0.06);
+      --stroke: rgba(255,255,255,0.08);
     }
     * { box-sizing: border-box; }
     body {
@@ -23,49 +25,67 @@
       background: radial-gradient(1200px 800px at 20% 0%, #0f1630 0%, var(--bg) 60%);
       color: var(--text);
       min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
     }
+    header {
+      position: sticky;
+      top: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 24px;
+      background: linear-gradient(180deg, rgba(20,26,47,0.85), rgba(20,26,47,0.55));
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--stroke);
+      z-index: 10;
+    }
+    .brand { font-weight: 800; letter-spacing: 0.3px; }
+    nav { display: flex; gap: 12px; }
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      opacity: 0.9;
+      padding: 8px 10px;
+      border-radius: 8px;
+    }
+    nav a:hover { color: var(--accent); background: rgba(79,140,255,0.08); }
     .card {
       width: 100%;
-      max-width: 560px;
-      background: linear-gradient(180deg, #171e37 0%, var(--card) 100%);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 16px;
-      padding: 24px;
+      max-width: 960px;
+      background: linear-gradient(180deg, rgba(23,30,55,0.9) 0%, rgba(20,26,47,0.95) 100%);
+      border: 1px solid var(--stroke);
+      border-radius: 18px;
+      padding: 32px;
+      margin: 32px auto;
       box-shadow: var(--shadow);
+      position: relative;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 18px;
+      padding: 1px;
+      background: linear-gradient(180deg, rgba(79,140,255,0.3), rgba(79,140,255,0.0));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      mask-composite: exclude;
+      pointer-events: none;
     }
     h1 {
-      margin: 0 0 8px 0;
-      font-size: 24px;
+      margin: 0 0 12px 0;
+      font-size: 32px;
       letter-spacing: 0.2px;
     }
     p.sub {
       margin: 0 0 20px 0;
       color: var(--muted);
-      font-size: 14px;
+      font-size: 16px;
     }
-    .row {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-    input[type="text"] {
-      flex: 1;
-      background: #0f152a;
-      color: var(--text);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 10px;
-      padding: 12px 14px;
-      outline: none;
-      font-size: 14px;
-      transition: border-color .15s ease, box-shadow .15s ease;
-    }
-    input[type="text"]:focus {
-      border-color: rgba(79,140,255,0.8);
-      box-shadow: 0 0 0 4px rgba(79,140,255,0.15);
-    }
+    .btn { display: inline-flex; align-items: center; gap: 8px; }
     button {
       background: var(--accent);
       color: white;
@@ -79,109 +99,101 @@
     }
     button:hover { background: var(--accent-strong); }
     button:active { transform: translateY(1px); }
+    .btn.secondary button { background: #2c3248; }
+    .btn.secondary button:hover { background: #343a52; }
     .muted { color: var(--muted); }
-    .result {
-      border-top: 1px dashed rgba(255,255,255,0.08);
-      margin-top: 18px;
-      padding-top: 18px;
-      min-height: 24px;
-      font-size: 15px;
-    }
-    .tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      font-weight: 600;
-    }
-    .tag.success { background: rgba(48,209,88,0.12); color: var(--success); }
-    .tag.error { background: rgba(255,77,109,0.12); color: var(--danger); }
-    .spinner {
-      width: 16px; height: 16px; border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.2);
-      border-top-color: white;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .footer { margin-top: 14px; font-size: 12px; }
     a { color: var(--accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
+    .hero { display: grid; gap: 16px; }
+    .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    @media (min-width: 800px) {
+      .grid { grid-template-columns: 1.2fr 0.8fr; }
+    }
   </style>
 </head>
 <body>
+  <header>
+    <div class="brand">USA Map</div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="download.html">Download</a>
+      <a href="#about">About</a>
+    </nav>
+  </header>
+
   <div class="card">
-    <h1>American Truck Simulator ownership</h1>
-    <p class="sub">Enter your 17-digit SteamID64 to check if you own ATS.</p>
-
-    <div class="row">
-      <input type="text" id="steamid" placeholder="xxxxxxxxxxxxxxxxx" inputmode="numeric" autocomplete="off">
-      <button id="checkBtn" onclick="checkATS()">Check</button>
+    <div class="grid">
+      <div class="hero">
+        <h1>Explore the USA Map Project</h1>
+        <p class="sub">A community-driven ETS2 experience. Download the assets and use our checker to verify your ATS ownership (required, because we use ATS assets).</p>
+        <div class="cta-row">
+          <a class="btn" href="download.html"><button>Go to Download & Checker</button></a>
+          <a class="btn secondary" href="#about"><button>Learn more</button></a>
+        </div>
+      </div>
+      <div>
+        <div style="background:#0f152a;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px;">
+          <div style="font-weight:700;margin-bottom:6px;">Quick links</div>
+          <ul style="margin:0;padding-left:18px;line-height:1.9;">
+            <li><a href="download.html">Download & ATS ownership check</a></li>
+            <li><a href="#about">About the project</a></li>
+          </ul>
+        </div>
+      </div>
     </div>
-
-    <div id="hint" class="muted" style="margin-top:8px;font-size:12px;">
-      Not sure of your SteamID64? Use <a href="https://steamid.io/lookup" target="_blank" rel="noreferrer noopener">steamid.io</a>.
-    </div>
-
-    <div id="result" class="result"></div>
-    <div class="footer muted"></code></div>
   </div>
 
-  <script>
-    const endpoint = 'https://usa-snowy.vercel.app/api/checkATS';
-
-    function setLoading(isLoading) {
-      const btn = document.getElementById('checkBtn');
-      btn.disabled = isLoading;
-      btn.textContent = isLoading ? 'Checking…' : 'Check';
-    }
-
-    function renderMessage(html) {
-      document.getElementById('result').innerHTML = html;
-    }
-
-    function validateSteamId(steamid) {
-      return /^\d{17}$/.test(steamid);
-    }
-
-    async function checkATS() {
-      const input = document.getElementById('steamid');
-      const steamid = input.value.trim();
-      renderMessage('');
-
-      if (!validateSteamId(steamid)) {
-        renderMessage('<span class="tag error">⚠️ Invalid SteamID64. It must have 17 digits.</span>');
-        input.focus();
-        return;
-      }
-
-      setLoading(true);
-      renderMessage('<span class="muted">Checking ownership…</span>');
-
-      try {
-        const res = await fetch(`${endpoint}?steamid=${steamid}`, { method: 'GET' });
-        const data = await res.json();
-
-        if (!res.ok) {
-          throw new Error(data?.error || 'Request failed');
-        }
-
-        if (data.ownsATS) {
-          renderMessage('<span class="tag success">✅ You own ATS</span>');
-        } else {
-          renderMessage('<span class="tag error">❌ You do not own ATS</span>');
-        }
-      } catch (err) {
-        renderMessage(`<span class="tag error">❌ Error: ${err.message || 'Unexpected error'}</span>`);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    // Allow Enter key to trigger check
-    document.getElementById('steamid').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') { checkATS(); }
-    });
-  </script>
+  <div id="about" class="card">
+    <h1>About</h1>
+    <p class="sub">USA Map is a fan-made project for <b>Euro Truck Simulator 2</b> focused on expanding and enhancing your driving experience. We provide high‑quality assets and community documentation to make setup simple and reliable. Because the project uses <b>ATS assets</b>, we require players to own <b>American Truck Simulator</b> and we verify this via Steam’s public API.</p>
+    <div style="display:grid; gap:16px; margin-top:12px;">
+      <div style="background:#0f152a;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px;">
+        <div style="font-weight:700;margin-bottom:6px;">Key features</div>
+        <ul style="margin:0;padding-left:18px;line-height:1.9;">
+          <li>Curated, optimized assets for stable gameplay</li>
+          <li>Simple download flow with ownership verification</li>
+          <li>Clean documentation and support guidance</li>
+        </ul>
+      </div>
+      <div style="background:#0f152a;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px;">
+        <div style="font-weight:700;margin-bottom:6px;">How it works</div>
+        <ol style="margin:0;padding-left:18px;line-height:1.9;">
+          <li>Go to <a href="download.html">Download</a> and enter your SteamID64.</li>
+          <li>We securely check Steam’s API to confirm <b>ATS ownership</b> (no personal data is stored).</li>
+          <li>If ownership is confirmed, ETS2 assets download unlocks immediately.</li>
+        </ol>
+      </div>
+      <div style="background:#0f152a;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px;">
+        <div style="font-weight:700;margin-bottom:6px;">Privacy</div>
+        <p style="margin:0;" class="muted">Your SteamID64 is used only to verify ATS ownership via Steam’s public API and is not stored or shared.</p>
+      </div>
+      <div style="background:#0f152a;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px;">
+        <div style="font-weight:700;margin-bottom:6px;">Roadmap</div>
+        <ul style="margin:0;padding-left:18px;line-height:1.9;">
+          <li>Improved installer and integrity checks</li>
+          <li>Auto-updater for assets</li>
+          <li>Optional performance presets</li>
+        </ul>
+      </div>
+      <div style="background:#0f152a;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px;">
+        <div style="font-weight:700;margin-bottom:6px;">FAQ</div>
+        <details style="margin-top:8px;">
+          <summary>What is a SteamID64?</summary>
+          <p class="muted">A 17‑digit unique identifier for your Steam account. You can find it at <a href="https://steamid.io/lookup" target="_blank" rel="noreferrer noopener">steamid.io</a>.</p>
+        </details>
+        <details style="margin-top:8px;">
+          <summary>Why do I need to verify ownership?</summary>
+          <p class="muted">To ensure assets are used by players who own ATS, keeping distribution compliant with Steam’s terms.</p>
+        </details>
+      </div>
+    </div>
+    <p class="muted" style="margin-top:8px;">Need help? Reach out on our community channels.</p>
+  </div>
+  <div class="card" style="text-align:center;opacity:.75; font-size:12px;">© USA Map Project — community-driven, not affiliated with SCS Software or Valve.</div>
 </body>
 </html>
